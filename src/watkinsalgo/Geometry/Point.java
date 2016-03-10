@@ -20,11 +20,6 @@ public class Point {
         return Math.abs(yCoord - coords[1]) <= eps;
     }
     
-    private double getCurrentCoord(double start, double finish, double proportion) {
-        double coordMin = min(start, finish),
-               dif = abs(finish - start);
-        return coordMin + proportion * dif;
-    }
     /**
      * Возвращает точку пересечения отрезка с плоскостью у=с.
      * @param other
@@ -33,12 +28,18 @@ public class Point {
      */
     public Point getBetween(Point other, double currentY) {
         double proportion = abs((currentY - getY()) / (getY() - other.getY()));
-        return new Point
-            (getCurrentCoord(getX(), other.getX(), proportion), 
-             currentY, 
-             getCurrentCoord(getZ(), other.getZ(), proportion)); 
+        return new Point(
+                getCurrentCoord(getX(), other.getX(), proportion),
+                currentY,
+                getCurrentCoord(getZ(), other.getZ(), proportion));
     }
-    
+
+    private double getCurrentCoord(double start, double finish, double proportion) {
+        double coordMin = min(start, finish),
+                dif = abs(finish - start);
+        return coordMin + proportion * dif;
+    }
+
     @Override
     public String toString() {
         return "X = " + coords[0] + ", Y = " + coords[1] + ", Z = " + coords[2];

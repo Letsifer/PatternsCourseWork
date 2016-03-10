@@ -25,7 +25,7 @@ public class Segment {
     }
     
     /**
-     * Поиск точек пересечения отрека с плоскость Y=c.
+     * Поиск точек пересечения отрезка с плоскостью Y=c.
      * Возвращает:
      * 0 точек - если отрезок не пересекается с плоскостью Y,
      * 1 точка - если отрезок пересекает плоскость Y,
@@ -34,11 +34,31 @@ public class Segment {
      * @return 
      */
     public Point[] getIntersectionWithY(double currentY) {
-        
+        if (!isSegmentIntersectY(currentY)) {
+            return null;
+        }
+        boolean isStartPointOnY = start.hasEqualYCoord(currentY),
+                isFinishPointOnY = finish.hasEqualYCoord(currentY);
+        //обе точки лежат на плоскости
+        if (isStartPointOnY && isFinishPointOnY) {
+            return new Point[]{start, finish};
+        }
+        if (isStartPointOnY) {
+            return new Point[]{start};
+        }
+        if (isFinishPointOnY) {
+            return new Point[]{finish};
+        }
+        return new Point[]{start.getBetween(finish, currentY)};
+    }
+    
+    private boolean isSegmentIntersectY(double currentY) {
+        DoublePair pair = getMinimumAndMaximumY();
+        return pair.getMinValue() <= currentY && pair.getMxValue() >= currentY;
     }
     
     /**
-     * Поиск точер пересечения отрезков.
+     * Поиск точек пересечения отрезков.
      * Возвращает:
      * 0 точек - если отрезки не пересекаются,
      * 1 точка - если отрезки пересекаются в 1 точки,
