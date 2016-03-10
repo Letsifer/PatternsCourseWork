@@ -35,11 +35,11 @@ public class DoublePair {
         this.minValue = minValue;
     }
 
-    public double getMxValue() {
+    public double getMaxValue() {
         return maxValue;
     }
 
-    public void setMxValue(double mxValue) {
+    public void setMaxValue(double mxValue) {
         this.maxValue = mxValue;
     }
 

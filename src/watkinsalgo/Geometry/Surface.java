@@ -26,6 +26,36 @@ public class Surface {
         edges.stream().forEach(current -> answer.changeValue(current.getMinimumAndMaximumY()));
         return answer;
     }
+    
+    /**
+     * Нахождение точки или отрезка пересечения данной плоскости с плоскостью Y=c.
+     * Если только одна точка пересечения, то обе границы одинаковы.
+     * @param currentY
+     * @return 
+     */
+    public Segment getIntersectionWithY(double currentY) {
+        Point start = null, finish = null;
+        for (Segment edge : edges) {
+            Point[] intersection = edge.getIntersectionWithY(currentY);
+            if (intersection != null) {
+                if (intersection.length == 2) {
+                    start = intersection[0];
+                    finish = intersection[1];
+                    break;
+                }
+                if (start == null) {
+                    start = intersection[0];
+                } else {
+                    finish = intersection[0];
+                    break;
+                }
+            }
+        }
+        if (finish == null) {
+            return new Segment(start, start);
+        }
+        return new Segment(start, finish);
+    }
 
     public Surface(Color surfaceColor) {
         this.surfaceColor = surfaceColor;

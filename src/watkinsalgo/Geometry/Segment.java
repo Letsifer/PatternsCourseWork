@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package watkinsalgo.Geometry;
 
 import java.util.Objects;
@@ -62,7 +57,7 @@ public class Segment {
     
     private boolean isSegmentIntersectY(double currentY) {
         DoublePair pair = getMinimumAndMaximumY();
-        return pair.getMinValue() <= currentY && pair.getMxValue() >= currentY;
+        return pair.getMinValue() <= currentY && pair.getMaxValue() >= currentY;
     }
     
     /**
