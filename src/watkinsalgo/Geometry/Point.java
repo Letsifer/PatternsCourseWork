@@ -2,6 +2,7 @@ package watkinsalgo.Geometry;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
+import java.util.Arrays;
 
 /**
  *
@@ -18,6 +19,27 @@ public class Point {
      */
     public boolean hasEqualYCoord(double yCoord) {
         return Math.abs(yCoord - coords[1]) <= eps;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Point other = (Point) obj;
+        if (Double.compare(coords[0] / coords[3], other.coords[0] / other.coords[3]) != 0) {
+            return false;
+        }
+        if (Double.compare(coords[1] / coords[3], other.coords[1] / other.coords[3]) != 0) {
+            return false;
+        }
+        return Double.compare(coords[2] / coords[3], other.coords[2] / other.coords[3]) == 0;
     }
     
     /**
@@ -39,7 +61,15 @@ public class Point {
                 dif = abs(finish - start);
         return coordMin + proportion * dif;
     }
-
+    
+    public boolean compareXAndZ(Point other) {
+        int dif = Double.compare(getX(), other.getX());
+        if (dif > 0) return false;
+        if (dif < 0) return true;
+        dif = Double.compare(getZ(), other.getZ());
+        return dif > 0;
+    }
+    
     @Override
     public String toString() {
         return "X = " + coords[0] + ", Y = " + coords[1] + ", Z = " + coords[2];

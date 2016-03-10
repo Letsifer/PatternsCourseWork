@@ -8,16 +8,24 @@ package watkinsalgo.Geometry;
 import java.util.Objects;
 import watkinsalgo.util.DoublePair;
 
+import static java.lang.Math.*;
+
 /**
- *
+ * Класс ребра плоскости.
  * @author Евгений
  */
 public class Segment {
+    private final static double EPS = 1e-8;
     /**
-     * Концы отрезков
+     * Концы отрезков.
      */
     private Point start, finish;
 
+    /**
+     * Координаты отрезка в проекции на плоскость XOZ.
+     */
+    private double a, b, c;
+    
     public DoublePair getMinimumAndMaximumY() {
         double minY = Math.min(start.getY(), finish.getY()),
                maxY = Math.max(start.getY(), finish.getY());
@@ -67,12 +75,92 @@ public class Segment {
      * @return 
      */    
     public Point[] getIntersectionWithSegment(Segment other) {
-        
+        //проверка на bounding-box, если отрезки не лежат в них, то точно не пересекаются
+        if (!isIntersectIn1D(other)) {
+            return null;
+        }
+        double determinant = a * other.b - b * other.a;
+        if (abs(determinant) < EPS) { //если отрезки лежат на одной прямой или параллельны
+            if (abs(this.dist(other.start)) > EPS || abs(other.dist(start)) > EPS) {
+                return null;
+            }
+            Point a, b, c, d;
+            if (start.compareXAndZ(finish)) {
+                a = start; b = finish;
+            } else {
+                b = start; a = finish;
+            }
+            if (other.start.compareXAndZ(other.finish)) {
+                c = other.start; d = other.finish;
+            } else {
+                d = other.start; c = other.finish;
+            }
+            Point left = a.compareXAndZ(c) ? c : a, 
+                  right = b.compareXAndZ(d) ? b : d;
+            if (left.equals(right)) {
+                return new Point[]{left};
+            }
+            return new Point[]{left, right};            
+        }
+        //если лежат на разных прямых, то будет 1 точка пересечения, если она лежит на каждом из отрезков
+        double x = - (c * other.b - b * other.c) / determinant,
+               z = - (a * other.c - c * other.a) / determinant;
+        Point answer = new Point(x, 0, z);
+        if (isPointBetweenEnds(answer) && other.isPointBetweenEnds(answer)) {
+            return new Point[]{answer};
+        }
+        return null;
     } 
+    
+    private boolean isPointBetweenEnds(Point p) {
+        return isBetweenCoords(start.getX(), finish.getX(), p.getX()) &&
+               isBetweenCoords(start.getZ(), finish.getZ(), p.getZ());
+    }
+    
+    private boolean isBetweenCoords(double left, double right, double value) {
+        if (left > right) {
+            double swap = left; left = right; right = swap;
+        }
+        return Double.compare(left, value) <= 0 && 
+               Double.compare(value, right) <= 0;
+    }
+    
+    private double dist(Point p) {
+        return a * p.getX() + b * p.getZ() + c;
+    }
+    
+    private boolean isIntersectIn1D(Segment other) {
+        return isIntersectIn1D(start.getX(), finish.getX(), other.start.getX(), other.finish.getX()) &&
+               isIntersectIn1D(start.getZ(), finish.getZ(), other.start.getZ(), other.finish.getZ());
+    }
+    
+    private boolean isIntersectIn1D(double a, double b, double c, double d) {
+        if (a > b)  {
+            double e = a; a = b; b = e;
+        }
+	if (c > d)  {
+            double e = c; c = d; d = e;
+        }
+	return max (a, c) <= min (b, d) + EPS;
+    }
     
     public Segment(Point start, Point finish) {
         this.start = start;
         this.finish = finish;
+        a = finish.getZ() - start.getZ();
+        b = start.getX() - finish.getX();
+        c = - a * start.getX() - b * start.getZ();
+        double norm = Math.sqrt(a * a + b * b);
+        if (Math.abs(norm) >= EPS) {
+            a /= norm;
+            b /= norm;
+            c /= norm;
+        }
+        if (a < 0 || Math.abs(a) < EPS && b < 0) {
+            a = -a;
+            b = -b;
+            c = -c;
+        }
     }
 
     public Point getStart() {

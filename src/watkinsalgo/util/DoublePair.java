@@ -43,5 +43,11 @@ public class DoublePair {
         this.maxValue = mxValue;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        DoublePair pair = (DoublePair) obj;
+        return Double.compare(minValue, pair.minValue) == 0 && Double.compare(maxValue, pair.maxValue) == 0;
+    }
+
     
 }
