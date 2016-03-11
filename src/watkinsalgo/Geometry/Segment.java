@@ -4,6 +4,7 @@ import java.util.Objects;
 import watkinsalgo.util.DoublePair;
 
 import static java.lang.Math.*;
+import javafx.scene.paint.Color;
 
 /**
  * Класс ребра плоскости.
@@ -16,6 +17,8 @@ public class Segment {
      */
     private Point start, finish;
 
+    private final Color surfaceColor;
+    
     /**
      * Координаты отрезка в проекции на плоскость XOZ.
      */
@@ -25,6 +28,12 @@ public class Segment {
         double minY = Math.min(start.getY(), finish.getY()),
                maxY = Math.max(start.getY(), finish.getY());
         return new DoublePair(minY, maxY);
+    }
+    
+    public DoublePair getMinimumAndMaximumX() {
+        double minX = Math.min(start.getX(), finish.getX()),
+               maxX = Math.max(start.getX(), finish.getX());
+        return new DoublePair(minX, maxX);
     }
     
     /**
@@ -156,8 +165,29 @@ public class Segment {
             b = -b;
             c = -c;
         }
+        surfaceColor = null;
     }
 
+    public Segment(Point start, Point finish, Color surfaceColor) {
+        this.start = start;
+        this.finish = finish;
+        this.surfaceColor = surfaceColor;
+        a = finish.getZ() - start.getZ();
+        b = start.getX() - finish.getX();
+        c = - a * start.getX() - b * start.getZ();
+        double norm = Math.sqrt(a * a + b * b);
+        if (Math.abs(norm) >= EPS) {
+            a /= norm;
+            b /= norm;
+            c /= norm;
+        }
+        if (a < 0 || Math.abs(a) < EPS && b < 0) {
+            a = -a;
+            b = -b;
+            c = -c;
+        }
+    }
+    
     public Point getStart() {
         return start;
     }

@@ -35,28 +35,56 @@ public class Surface {
      */
     public Segment getIntersectionWithY(double currentY) {
         Point start = null, finish = null;
-        for (Segment edge : edges) {
-            Point[] intersection = edge.getIntersectionWithY(currentY);
-            if (intersection != null) {
-                if (intersection.length == 2) {
-                    start = intersection[0];
-                    finish = intersection[1];
-                    break;
+        if (checkForOneY(currentY)) {
+            start = new Point(Double.MAX_VALUE, 0, 0);
+            finish = new Point(Double.MIN_VALUE, 0, 0);
+            for (Segment edge : edges) {
+                if (edge.getStart().getX() < start.getX()) {
+                    start = edge.getStart();                    
                 }
-                if (start == null) {
-                    start = intersection[0];
-                } else {
-                    finish = intersection[0];
-                    break;
+                if (edge.getFinish().getX() < start.getX()) {
+                    start = edge.getFinish();                    
+                }
+                if (edge.getStart().getX() > finish.getX()) {
+                    finish = edge.getStart();
+                }
+                if (edge.getFinish().getX() > finish.getX()) {
+                    finish = edge.getFinish();
                 }
             }
+        } else {
+            for (Segment edge : edges) {
+                Point[] intersection = edge.getIntersectionWithY(currentY);
+                if (intersection != null) {
+                    if (intersection.length == 2) {
+                        start = intersection[0];
+                        finish = intersection[1];
+                        break;
+                    }
+                    if (start == null) {
+                        start = intersection[0];
+                    } else {
+                        finish = intersection[0];
+                        break;
+                    }
+                }
+            }
+            if (finish == null) {
+                finish = start;
+            }
         }
-        if (finish == null) {
-            return new Segment(start, start);
-        }
-        return new Segment(start, finish);
+        return new Segment(start, finish, surfaceColor);
     }
 
+    private boolean checkForOneY(Double currentY) {
+        Double y0 = edges.get(0).getStart().getY(),
+               y1 = edges.get(0).getFinish().getY(),
+               y2 = edges.get(1).getFinish().getY();
+        return Double.compare(currentY, y0) == 0 &&
+               Double.compare(y0, y1) == 0 &&
+               Double.compare(y1, y2) == 0;
+    }
+    
     public Surface(Color surfaceColor) {
         this.surfaceColor = surfaceColor;
     }

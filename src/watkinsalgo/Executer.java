@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import watkinsalgo.Geometry.Segment;
 import watkinsalgo.Geometry.Surface;
 import watkinsalgo.util.DoublePair;
 
@@ -25,32 +26,36 @@ public class Executer {
         context = canvas.getGraphicsContext2D();
     }
     private ArrayList<Surface> drawnSurfaces = new ArrayList<>();
+    private ArrayList<Segment> drawnSegments = new ArrayList<>();
     public void drawPicture() {
         context.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         
         DoublePair border = findMinAndMaxY();
-        
-        
+         
         for (int currentY = (int)border.getMaxValue(), endY = (int)border.getMinValue(); currentY >= endY; currentY--) {
-            //добавление-удаление рассматриваемых плоскостей
-            changeDrawnSurfacesList(currentY);
+            //добавление рассматриваемых плоскостей
+            changeDrawnSurfacesList(currentY, true);
             //поиск всех точек, пересекающих эту плоскость, и составление из них отрезков
             //поиск точек пересечения между этими отрезками
             //сортировка
             //отрисовка
             
+            //удаление уже рассмотренных плоскостей
+            changeDrawnSurfacesList(currentY, false);
         }
     }
     
-    private void changeDrawnSurfacesList(double currentY) {
+    private void changeDrawnSurfacesList(double currentY, boolean isAdd) {
         ArrayList<SurfaceEvent> events = list.getEvent(currentY);
         if (events == null) return;
         events.stream().forEach(event ->
         {
-            if (event.isStart) {
+            if (isAdd && event.isStart) {
                 drawnSurfaces.add(event.surface);
             } else {
-                drawnSurfaces.remove(event.surface);
+                if (!isAdd && !event.isStart) {
+                    drawnSurfaces.remove(event.surface);
+                }
             }
         });
     }
