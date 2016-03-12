@@ -73,7 +73,10 @@ public class Surface {
                 finish = start;
             }
         }
-        return new Segment(start, finish, surfaceColor);
+        Segment segment = new Segment(start, finish, surfaceColor);
+        start.setParent(segment);
+        finish.setParent(segment);
+        return segment;
     }
 
     private boolean checkForOneY(Double currentY) {

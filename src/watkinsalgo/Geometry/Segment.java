@@ -79,17 +79,18 @@ public class Segment {
      * @param other
      * @return 
      */    
-    public Point[] getIntersectionWithSegment(Segment other) {
+    public Point getIntersectionWithSegment(Segment other) {
         //проверка на bounding-box, если отрезки не лежат в них, то точно не пересекаются
         if (!isIntersectIn1D(other)) {
             return null;
         }
         double determinant = a * other.b - b * other.a;
         if (abs(determinant) < EPS) { //если отрезки лежат на одной прямой или параллельны
-            if (abs(this.dist(other.start)) > EPS || abs(other.dist(start)) > EPS) {
-                return null;
-            }
-            Point a, b, c, d;
+            //если они лежат на одной или параллельных прямых, то не нужно создавать новую точку
+            //if (abs(this.dist(other.start)) > EPS || abs(other.dist(start)) > EPS) {
+            return null;
+            //}
+            /*Point a, b, c, d;
             if (start.compareXAndZ(finish)) {
                 a = start; b = finish;
             } else {
@@ -105,14 +106,14 @@ public class Segment {
             if (left.equals(right)) {
                 return new Point[]{left};
             }
-            return new Point[]{left, right};            
+            return new Point[]{left, right};  */          
         }
         //если лежат на разных прямых, то будет 1 точка пересечения, если она лежит на каждом из отрезков
         double x = - (c * other.b - b * other.c) / determinant,
                z = - (a * other.c - c * other.a) / determinant;
         Point answer = new Point(x, 0, z);
         if (isPointBetweenEnds(answer) && other.isPointBetweenEnds(answer)) {
-            return new Point[]{answer};
+            return answer;
         }
         return null;
     } 
@@ -187,6 +188,10 @@ public class Segment {
             b = -b;
             c = -c;
         }
+    }
+
+    public Color getSurfaceColor() {
+        return surfaceColor;
     }
     
     public Point getStart() {
