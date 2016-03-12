@@ -30,7 +30,17 @@ public class Segment {
         return new DoublePair(minY, maxY);
     }
     
+    public DoublePair getMinimumAndMaximumX() {
+        double minX = Math.min(start.getX(), finish.getX()),
+               maxX = Math.max(start.getX(), finish.getX());
+        return new DoublePair(minX, maxX);
+    }
+    
     public double getZOnX(double currentX) {
+        DoublePair xes = getMinimumAndMaximumX();
+        if (currentX <= xes.getMinValue() || xes.getMaxValue() < currentX) {
+            return -Double.MAX_VALUE;
+        }
         double proportion = abs((currentX - start.getX()) / (start.getX() - finish.getX()));
         double coordMin = min(start.getZ(), finish.getZ()),
                 dif = abs(finish.getZ() - start.getZ());
@@ -59,9 +69,9 @@ public class Segment {
         if (isStartPointOnY) {
             return new Point[]{start};
         }
-        if (isFinishPointOnY) {
-            return new Point[]{finish};
-        }
+//        if (isFinishPointOnY) {
+//            return new Point[]{finish};
+//        }
         return new Point[]{start.getBetween(finish, currentY)};
     }
     

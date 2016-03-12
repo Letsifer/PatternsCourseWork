@@ -59,7 +59,7 @@ public class Point {
      * @return 
      */
     public Point getBetween(Point other, double currentY) {
-        double proportion = abs((currentY - getY()) / (getY() - other.getY()));
+        double proportion = ((currentY - getY()) / (other.getY() - getY()));
         return new Point(
                 getCurrentCoord(getX(), other.getX(), proportion),
                 currentY,
@@ -67,9 +67,7 @@ public class Point {
     }
 
     private double getCurrentCoord(double start, double finish, double proportion) {
-        double coordMin = min(start, finish),
-                dif = abs(finish - start);
-        return coordMin + proportion * dif;
+        return start + proportion * (finish - start);
     }
     
     public boolean compareXAndZ(Point other) {
