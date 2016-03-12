@@ -30,10 +30,11 @@ public class Segment {
         return new DoublePair(minY, maxY);
     }
     
-    public DoublePair getMinimumAndMaximumX() {
-        double minX = Math.min(start.getX(), finish.getX()),
-               maxX = Math.max(start.getX(), finish.getX());
-        return new DoublePair(minX, maxX);
+    public double getZOnX(double currentX) {
+        double proportion = abs((currentX - start.getX()) / (start.getX() - finish.getX()));
+        double coordMin = min(start.getZ(), finish.getZ()),
+                dif = abs(finish.getZ() - start.getZ());
+        return coordMin + proportion * dif;
     }
     
     /**

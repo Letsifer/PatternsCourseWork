@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import watkinsalgo.Geometry.Segment;
-import watkinsalgo.Geometry.Surface;
+import watkinsalgo.Geometry.*;
 import watkinsalgo.util.DoublePair;
 
 /**
@@ -72,7 +71,16 @@ public class Executer {
         );
         return border;
     }
-        
+    
+    enum PointEvents {
+        START,  FINISH, INTERSECTION
+    };
+    
+    class PointEvent {
+        PointEvents event;
+        Point point;
+    }
+    
     class SurfaceEvent {
         Surface surface;
         boolean isStart;

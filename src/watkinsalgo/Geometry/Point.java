@@ -21,6 +21,16 @@ public class Point {
         return Math.abs(yCoord - coords[1]) <= eps;
     }
 
+    private Segment parent;
+
+    public Segment getParent() {
+        return parent;
+    }
+
+    public void setParent(Segment parent) {
+        this.parent = parent;
+    }
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
