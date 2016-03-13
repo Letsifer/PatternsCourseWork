@@ -16,8 +16,18 @@ public class StarterController {
     private Button buttonDo;
     
     @FXML
-    private void actionPerformed() {
-        Executer executer = new Executer(canvas);
-        executer.drawPicture();
+    private Button buttonSlowDo;
+    
+    Executer executer;
+    @FXML
+    private void actionOncePerformed() {
+        executer = new Executer(canvas);
+        executer.drawPicture(true);
+    }
+    
+    @FXML
+    private void actionSlowPerformed() {
+        executer = new Executer(canvas);
+        executer.drawPicture(false);
     }
 }
